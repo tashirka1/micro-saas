@@ -1,0 +1,7 @@
+.gitignore
+.git
+node_modules
+build
+Dockerfile
+compose.yml
+Caddyfile
