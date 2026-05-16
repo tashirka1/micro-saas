@@ -1,4 +1,4 @@
-include .env
+include web/.env
 
 .PHONY: up down build
 
