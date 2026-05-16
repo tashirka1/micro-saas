@@ -15,6 +15,7 @@ sudo su tashirka
 mkdir ~/.ssh
 echo "<public key>" >> ~/.ssh/authorized_keys
 
+# docker group
 sudo groupadd docker
 sudo usermod -aG docker $USER
 newgrp docker
