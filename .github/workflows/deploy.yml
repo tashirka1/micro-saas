@@ -1,0 +1,49 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+
+env:
+  TARGET_PATH: "/home/tashirka/micro-saas"
+  SSH_HOST: ${{ secrets.SSH_HOST }}
+  SSH_PORT: ${{ secrets.SSH_PORT }}
+  SSH_USER: ${{ secrets.SSH_USER }}
+  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+  SSH_PASSPHRASE: ${{ secrets.SSH_PASSPHRASE }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.2.5
+        with:
+          host: ${{ env.SSH_HOST }}
+          port: ${{ env.SSH_PORT }}
+          username: ${{ env.SSH_USER }}
+          key: ${{ env.SSH_PRIVATE_KEY }}
+          passphrase: ${{ env.SSH_PASSPHRASE }}
+          command_timeout: 30m
+          script: |
+            set -e
+
+            cd ${{ env.TARGET_PATH }}
+
+            echo "=== Pull latest changes ==="
+            git pull origin main
+
+            echo "=== Create .env files ==="
+            cat > web/.env <<EOF
+              API_URL=http://localhost
+            EOF
+
+            echo "=== Build and start containers ==="
+            make build
+            make down
+            make up
+
+            echo "=== Deploy completed ==="
