@@ -38,7 +38,7 @@ jobs:
 
             echo "=== Create .env files ==="
             cat > web/.env <<EOF
-              API_URL=http://localhost
+            API_URL=http://localhost
             EOF
 
             echo "=== Build and start containers ==="
